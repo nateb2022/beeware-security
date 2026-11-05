@@ -28,6 +28,17 @@ services:
       - opensearch
     networks:
       - analysis
+  fluent-bit:
+    image: fluent/fluent-bit:latest
+    container_name: fluent-bit
+    environment:
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${OPENSEARCH_INITIAL_ADMIN_PASSWORD}
+    volumes:
+      - ./fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+    depends_on:
+      - opensearch
+    networks:
+      - analysis
 
 volumes:
   opensearch-data:
