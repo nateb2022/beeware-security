@@ -35,13 +35,27 @@ services:
       - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${OPENSEARCH_INITIAL_ADMIN_PASSWORD}
     volumes:
       - ./fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+      - ./parser-cowrie.conf:/fluent-bit/etc/parsers-cowrie.conf
+      - cowrie-logs:/logs/cowrie:ro
     depends_on:
       - opensearch
     networks:
       - analysis
-
+  cowrie:
+    image: cowrie/cowrie:latest
+    container_name: cowrie
+    environment:
+      - COWRIE_PASSWORD=${COWRIE_PASSWORD}
+    volumes:
+      - ./cowrie.cfg:/cowrie/etc/cowrie.cfg
+      - cowrie-logs:/cowrie/cowrie-git/var/log/cowrie
+    ports:
+      - "2222:2222"  # SSH honeypot
+      - "2223:2223"  # Telnet honeypot
+    networks:
+      - analysis
 volumes:
   opensearch-data:
-
+  cowrie-logs:
 networks:
   analysis:
